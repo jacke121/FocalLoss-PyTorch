@@ -8,7 +8,7 @@ class FocalLoss(nn.Module):
         self.alpha = alpha
         self.gamma = torch.Tensor([gamma])
         self.size_average = size_average
-        if isinstance(alpha, (float, int, long)):
+        if isinstance(alpha, (float, int)):
             if self.alpha > 1:
                 raise ValueError('Not supported value, alpha should be small than 1.0')
             else:
