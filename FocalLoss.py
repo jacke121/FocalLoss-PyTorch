@@ -22,7 +22,7 @@ class FocalLoss(nn.Module):
         # target
         # [N,1,D,H,W] ->[N*D*H*W,1]
         if self.alpha.device != input.device:
-            self.alpha = torch.tensor(self.alpha, device=input.device)
+            self.alpha = torch.tensor(self.alpha, device=input.device).cuda()
         target = target.view(-1, 1)
         logpt = torch.log(input + 1e-10)
         logpt = logpt.gather(1, target)
@@ -30,12 +30,9 @@ class FocalLoss(nn.Module):
         pt = torch.exp(logpt)
         alpha = self.alpha.gather(0, target.view(-1))
 
-        gamma = self.gamma
+        gamma = self.gamma.cuda()
 
-        if not self.gamma.device == input.device:
-            gamma = torch.tensor(self.gamma, device=input.device)
-
-        loss = -1 * alpha * torch.pow((1 - pt), gamma) * logpt
+        loss = -1 * alpha * torch.pow((1 - pt), gamma)* logpt
         if self.size_average:
             loss = loss.mean()
         else:
